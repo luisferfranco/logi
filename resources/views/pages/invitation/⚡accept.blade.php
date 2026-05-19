@@ -115,7 +115,7 @@ class extends Component
 
             <div class="mt-4">
               <x-checkbox
-                wire:model.live="acceptTos"
+                wire:model="acceptTos"
                 label="Acepto los Términos y Condiciones"
                 />
             </div>

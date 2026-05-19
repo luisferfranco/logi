@@ -67,7 +67,7 @@ class extends Component
         <div>
           <a
             wire:navigate
-            href="#"
+            href="{{ route('recover') }}"
             class="text-sm text-primary hover:underline"
             >
             ¿Olvidó su contraseña?
