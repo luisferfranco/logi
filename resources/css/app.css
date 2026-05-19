@@ -19,8 +19,45 @@
 
 /** daisyUI */
 @plugin "daisyui" {
-    themes: light --default, dark --prefersdark;
+    themes: ferti --default;
 }
+
+@plugin "daisyui/theme" {
+  name: "ferti";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(97% 0 0);
+  --color-base-300: oklch(87% 0 0);
+  --color-base-content: oklch(20% 0 0);
+  --color-primary: #319B32;
+  --color-primary-content: oklch(0% 0 0);
+  --color-secondary: #7A8223;
+  --color-secondary-content: oklch(0% 0 0);
+  --color-accent: oklch(57% 0.245 27.325);
+  --color-accent-content: oklch(97% 0.021 166.113);
+  --color-neutral: oklch(70% 0 0);
+  --color-neutral-content: oklch(0% 0 0);
+  --color-info: oklch(68% 0.169 237.323);
+  --color-info-content: oklch(0% 0 0);
+  --color-success: oklch(72% 0.219 149.579);
+  --color-success-content: oklch(0% 0 0);
+  --color-warning: oklch(82% 0.189 84.429);
+  --color-warning-content: oklch(0% 0 0);
+  --color-error: oklch(50% 0.213 27.518);
+  --color-error-content: oklch(100% 0 0);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.21875rem;
+  --size-field: 0.21875rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 1;
+}
+
+
 
 /* maryUI */
 @source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
