@@ -43,4 +43,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }
+
+    /**
+     * Send the password reset notification using the Spanish notification.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \App\Notifications\SpanishResetPassword($token));
+    }
 }
