@@ -26,8 +26,27 @@
 
     {{-- Right side actions --}}
     <x-slot:actions>
-      <x-button label="Messages" icon="o-envelope" link="###" class="btn-ghost btn-sm" responsive />
-      <x-button label="Notifications" icon="o-bell" link="###" class="btn-ghost btn-sm" responsive />
+      <x-icon
+        name="tabler.bell"
+        class="w-6 h-6 cursor-pointer"
+        />
+      <x-dropdown>
+        <x-slot:trigger>
+          <img
+            src="https://randomuser.me/api/portraits/lego/1.jpg"
+            class="w-8 h-8 rounded-full mr-2"
+            />
+        </x-slot:trigger>
+
+        <x-menu-item
+          icon="tabler.user"
+          title="Mi Pefil"
+          />
+        <x-menu-item
+          icon="tabler.logout"
+          title="Salir del sistema"
+          />
+      </x-dropdown>
     </x-slot:actions>
   </x-nav>
 
@@ -55,12 +74,20 @@
 
       {{-- Activates the menu item when a route matches the `link` property --}}
       <x-menu activate-by-route>
-        <x-menu-item title="Home" icon="o-home" link="###" />
-        <x-menu-item title="Messages" icon="o-envelope" link="###" />
-        <x-menu-sub title="Settings" icon="o-cog-6-tooth">
-          <x-menu-item title="Wifi" icon="o-wifi" link="####" />
-          <x-menu-item title="Archives" icon="o-archive-box" link="####" />
-        </x-menu-sub>
+        <x-menu-item
+          title="Inicio"
+          icon="tabler.home"
+          link="{{ route('dashboard') }}"
+          />
+
+        @if ($user && ($user->hasRole('admin') || $user->hasRole('super-admin')))
+          <x-menu-separator />
+          <x-menu-item
+            title="Admininstrar Usuarios"
+            icon="tabler.users-group"
+            link="/admin"
+            />
+        @endif
       </x-menu>
     </x-slot:sidebar>
 

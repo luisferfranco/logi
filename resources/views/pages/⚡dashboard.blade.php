@@ -4,10 +4,20 @@ use Livewire\Component;
 
 new class extends Component
 {
-    //
+  public $user;
+
+  public function mount()
+  {
+    $this->user = auth()->user();
+  }
 };
 ?>
 
 <div>
-    {{-- Act only according to that maxim whereby you can, at the same time, will that it should become a universal law. - Immanuel Kant --}}
+  Bienvenido {{ $user->name }}, los roles que tienes asignados son los siguientes:
+  <ul>
+    @foreach($user->roles as $role)
+      <li>{{ $role->name }}</li>
+    @endforeach
+  </ul>
 </div>
