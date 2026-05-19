@@ -85,7 +85,7 @@
           <x-menu-item
             title="Admininstrar Usuarios"
             icon="tabler.users-group"
-            link="/admin"
+            link="{{ route('admin.users.index') }}"
             />
         @endif
       </x-menu>
@@ -93,7 +93,9 @@
 
     {{-- The `$slot` goes here --}}
     <x-slot:content class="bg-base-200">
-      {{ $slot }}
+      <div class="bg-base-100 shadow-md rounded-lg p-2">
+        {{ $slot }}
+      </div>
     </x-slot:content>
   </x-main>
 

@@ -16,10 +16,12 @@ class UserSeeder extends Seeder
     User::factory()->create([
       'name' => 'Super User',
       'email' => 'su@test.com',
+      'status' => 'activo',
     ]);
     User::factory()->create([
       'name' => 'Admin User',
       'email' => 'admin@test.com',
+      'status' => 'activo',
     ]);
   }
 }
