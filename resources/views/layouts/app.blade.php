@@ -32,23 +32,7 @@
         name="tabler.bell"
         class="w-6 h-6 cursor-pointer"
         />
-      <x-dropdown>
-        <x-slot:trigger>
-          <img
-            src="https://randomuser.me/api/portraits/lego/1.jpg"
-            class="w-8 h-8 rounded-full mr-2"
-            />
-        </x-slot:trigger>
-
-        <x-menu-item
-          icon="tabler.user"
-          title="Mi Pefil"
-          />
-        <x-menu-item
-          icon="tabler.logout"
-          title="Salir del sistema"
-          />
-      </x-dropdown>
+      <livewire:user-dropdown />
     </x-slot:actions>
   </x-nav>
 
