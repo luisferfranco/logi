@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Mary\Traits\Toast;
+use App\Services\UserInvitationService;
 use App\Enum\UserStatus;
 
 new class extends Component
@@ -37,6 +38,10 @@ new class extends Component
 
   public function mount()
   {
+    if (!auth()->user() || (!auth()->user()->hasRole('su') && !auth()->user()->hasRole('admin'))) {
+      abort(403);
+    }
+
     $this->empresas = Empresa::orderBy('nombre')->get();
 
     $this->headers = [
@@ -157,7 +162,15 @@ new class extends Component
         if (!empty($validated['form']['role'])) {
           $user->assignRole($validated['form']['role']);
         }
-        $this->success('Usuario creado.');
+
+        // Send invitation email with one-time link
+        try {
+          (new UserInvitationService())->sendInvitation($user);
+          $this->success('Usuario creado. Invitación enviada.');
+        } catch (\Exception $e) {
+          report($e);
+          $this->error('Usuario creado, pero fallo al enviar invitación.');
+        }
       }
 
       $this->modalOpen = false;
