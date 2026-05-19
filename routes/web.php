@@ -7,6 +7,10 @@ Route::livewire('/', 'pages::welcome');
 
 Route::livewire('/login', 'pages::auth.login')->name('login');
 
+// Invitation acceptance
+// Invitation acceptance handled by Livewire SFC
+Route::livewire('/invitation/accept', 'pages::invitation.accept')->name('invitation.accept');
+
 Route::middleware('auth')->group(function () {
     Route::livewire('/profile', 'pages::profile')->name('profile');
     Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
@@ -26,10 +30,11 @@ Route::get('/test-smtp', function () {
     try {
         Mail::raw('¡El SMTP de Gmail en Laravel funciona correctamente!', function ($message) {
             $message->to('luisferfranco@gmail.com')
-                    ->subject('Prueba de Conexión SMTP');
+                ->subject('Prueba de Conexión SMTP');
         });
+
         return '¡Éxito! El correo fue enviado sin problemas.';
-    } catch (\Exception $e) {
-        return 'Error al enviar el correo: ' . $e->getMessage();
+    } catch (Exception $e) {
+        return 'Error al enviar el correo: '.$e->getMessage();
     }
 });
