@@ -21,7 +21,9 @@
       </label>
 
       {{-- Brand --}}
-      <div>App</div>
+      <div>
+        <img src="/img/ferti-v.svg" class="h-12 w-auto" />
+      </div>
     </x-slot:brand>
 
     {{-- Right side actions --}}
@@ -61,17 +63,6 @@
       class="bg-base-100"
       >
 
-      {{-- User --}}
-      @if($user = auth()->user())
-        <x-list-item :item="$user" value="name" sub-value="email" no-separator no-hover class="pt-2">
-          <x-slot:actions>
-            <x-button icon="o-power" class="btn-circle btn-ghost btn-xs" tooltip-left="logoff" no-wire-navigate link="/logout" />
-          </x-slot:actions>
-        </x-list-item>
-
-        <x-menu-separator />
-      @endif
-
       {{-- Activates the menu item when a route matches the `link` property --}}
       <x-menu activate-by-route>
         <x-menu-item
@@ -80,12 +71,17 @@
           link="{{ route('dashboard') }}"
           />
 
-        @if ($user && ($user->hasRole('admin') || $user->hasRole('super-admin')))
+        @if (($user = auth()->user())&& ($user->hasRole('admin') || $user->hasRole('super-admin')))
           <x-menu-separator />
           <x-menu-item
             title="Admininstrar Usuarios"
             icon="tabler.users-group"
             link="{{ route('admin.users.index') }}"
+            />
+          <x-menu-item
+            title="Admininstrar Empresas"
+            icon="tabler.building-factory-2"
+            link="{{ route('admin.empresas.index') }}"
             />
         @endif
       </x-menu>
