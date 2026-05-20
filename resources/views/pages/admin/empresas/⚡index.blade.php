@@ -113,6 +113,7 @@ new class extends Component
       'email' => $empresa->email,
       'representante_id' => $empresa->representante_id,
     ];
+    $this->users = Empresa::find($id)->users()->orderBy('name')->get();
     $this->modalOpen = true;
   }
 
@@ -166,32 +167,63 @@ new class extends Component
     $this->success('Empresa restaurada.');
     $this->resetPage();
   }
+
+  public function modalClose() {
+    $this->resetForm();
+    $this->modalOpen = false;
+  }
 };
 ?>
 
 <div>
-  <x-header title="Empresas" separator>
-    <x-slot:middle class="justify-start">
-      <x-input placeholder="Buscar..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
-    </x-slot:middle>
-    <x-slot:actions>
-      <x-button label="Crear Empresa" icon="o-plus" class="btn-primary" wire:click="openCreate" />
-      <x-button :label="$showDeleted ? 'Ver activas' : 'Ver eliminadas'" :icon="$showDeleted ? 'o-eye' : 'o-eye-slash'" class="btn-ghost ml-2" wire:click="$toggle('showDeleted')" />
-    </x-slot:actions>
-  </x-header>
+  <x-input
+    placeholder="Buscar..."
+    wire:model.live.debounce="search"
+    clearable
+    icon="tabler.zoom"
+    />
 
-  <x-card shadow>
-    <x-table :headers="$headers" :rows="$empresas" with-pagination :per-page="$perPage" :per-page-values="$perPageValues">
-      @scope('actions', $empresa)
+  <div class="my-2 flex gap-1">
+    <x-button
+      wire:click="openCreate"
+      label="Crear Empresa"
+      icon="tabler.circle-plus"
+      class="btn-primary"
+      />
+    <x-button
+      wire:click="$toggle('showDeleted')"
+      :label="$showDeleted ? 'Ver activas' : 'Ver eliminadas'"
+      :icon="$showDeleted ? 'tabler.eye' : 'tabler.eye-off'"
+      class="btn-ghost"
+      />
+  </div>
+
+  <x-table :headers="$headers" :rows="$empresas" with-pagination :per-page="$perPage" :per-page-values="$perPageValues">
+    @scope('actions', $empresa)
+      <div class="flex gap-1">
         @if(method_exists($empresa, 'trashed') && $empresa->trashed())
-          <x-button icon="o-arrow-u-turn-left" wire:click="restore({{ $empresa->id }})" spinner="1" class="btn-ghost btn-sm" />
+          <x-button
+            wire:click="restore({{ $empresa->id }})"
+            icon="tabler.u-turn-left"
+            spinner="1"
+            class="btn-ghost btn-sm btn-success"
+            />
         @else
-          <x-button icon="o-pencil" wire:click="openEdit({{ $empresa->id }})" class="btn-ghost btn-sm" />
-          <x-button icon="o-trash" wire:click="confirmDelete({{ $empresa->id }})" spinner="1" class="btn-ghost btn-sm text-error" />
+          <x-button
+            wire:click="openEdit({{ $empresa->id }})"
+            icon="tabler.pencil"
+            class="btn-ghost btn-sm btn-info"
+            />
+          <x-button
+            wire:click="confirmDelete({{ $empresa->id }})"
+            icon="tabler.trash"
+            spinner="1"
+            class="btn-ghost btn-sm text-error"
+            />
         @endif
-      @endscope
-    </x-table>
-  </x-card>
+      </div>
+    @endscope
+  </x-table>
 
   {{-- Modal: Create / Edit --}}
   <x-modal
@@ -212,14 +244,17 @@ new class extends Component
     </div>
 
     <x-slot:actions>
-      <x-button label="Cancelar" @click="$set('modalOpen', false)" />
+      <x-button
+        label="Cancelar"
+        wire:click="modalClose"
+        />
       <x-button label="Guardar" class="btn-primary" wire:click="save" spinner="1" />
     </x-slot:actions>
   </x-modal>
 
   {{-- Confirm delete modal --}}
   <x-modal wire:model="confirmingDelete" title="Confirmar eliminación" persistent>
-    <p>¿Estás seguro de que quieres eliminar esta empresa? Esto usará soft-delete.</p>
+    <p>¿Estás seguro de que quieres eliminar esta empresa?</p>
 
     <x-slot:actions>
       <x-button label="Cancelar" @click="$set('confirmingDelete', false)" />
