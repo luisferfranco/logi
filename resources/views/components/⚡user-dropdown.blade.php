@@ -27,6 +27,7 @@ new class extends Component
   </x-slot:trigger>
 
   <x-menu-item
+    link="{{ route('profile') }}"
     icon="tabler.user"
     title="Mi Pefil"
     />

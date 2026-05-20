@@ -16,7 +16,7 @@ Route::livewire('/password/reset/{token}', 'pages::auth.reset')->name('password.
 Route::livewire('/invitation/accept', 'pages::invitation.accept')->name('invitation.accept');
 
 Route::middleware('auth')->group(function () {
-    Route::livewire('/profile', 'pages::profile')->name('profile');
+    Route::livewire('/profile', 'pages::auth.profile')->name('profile');
     Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
 
     Route::livewire('/admin/users', 'pages::admin.users.index')
