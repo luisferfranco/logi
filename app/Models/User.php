@@ -17,38 +17,41 @@ use Spatie\Permission\Traits\HasRoles;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Notifiable, SoftDeletes;
+  /** @use HasFactory<UserFactory> */
+  use HasFactory, HasRoles, Notifiable, SoftDeletes;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'deleted_at' => 'datetime',
-            'invitation_expires' => 'datetime',
-            'tos_accepted' => 'datetime',
-            'password' => 'hashed',
-            'status' => UserStatus::class,
-        ];
-    }
+  /**
+   * Get the attributes that should be cast.
+   *
+   * @return array<string, string>
+   */
+  protected function casts(): array
+  {
+    return [
+      'email_verified_at' => 'datetime',
+      'created_at' => 'datetime',
+      'updated_at' => 'datetime',
+      'deleted_at' => 'datetime',
+      'invitation_expires' => 'datetime',
+      'tos_accepted' => 'datetime',
+      'password' => 'hashed',
+      'status' => UserStatus::class,
+    ];
+  }
 
-    public function empresa()
-    {
-        return $this->belongsTo(Empresa::class, 'empresa_id');
-    }
+  public function empresa()
+  {
+    return $this->belongsTo(Empresa::class, 'empresa_id');
+  }
 
-    /**
-     * Send the password reset notification using the Spanish notification.
-     */
-    public function sendPasswordResetNotification($token): void
-    {
-        $this->notify(new \App\Notifications\SpanishResetPassword($token));
-    }
+  public function sendPasswordResetNotification($token): void
+  {
+    $this->notify(new \App\Notifications\SpanishResetPassword($token));
+  }
+
+  public function getAvatarUrlAttribute(): string
+  {
+    $emailHash = md5(strtolower(trim($this->email)));
+    return $this->avatar ?? "https://www.gravatar.com/avatar/{$emailHash}?s=200&d=identicon";
+  }
 }

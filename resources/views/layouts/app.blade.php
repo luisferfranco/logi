@@ -9,10 +9,12 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans bg-body-200 antialiased min-h-screen">
+<body class="font-sans bg-body-300 antialiased min-h-screen">
 
   {{-- The navbar with `sticky` and `full-width` --}}
-  <x-nav sticky full-width>
+  <x-nav sticky full-width class="bg-base-100 border-none">
+
+    {{-- The brand slot --}}
 
     <x-slot:brand>
       {{-- Drawer toggle for "main-drawer" --}}
@@ -37,7 +39,7 @@
   </x-nav>
 
   {{-- The main content with `full-width` --}}
-  <x-main with-nav full-width>
+  <x-main with-nav full-width class="bg-base-200">
 
     {{-- This is a sidebar that works also as a drawer on small screens --}}
     {{-- Notice the `main-drawer` reference here --}}
@@ -72,7 +74,7 @@
     </x-slot:sidebar>
 
     {{-- The `$slot` goes here --}}
-    <x-slot:content class="bg-base-200">
+    <x-slot:content class="bg-base-200 py-6! px-4!">
       <div class="bg-base-100 shadow-md rounded-lg p-2">
         {{ $slot }}
       </div>

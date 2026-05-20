@@ -21,7 +21,7 @@ new class extends Component
 <x-dropdown>
   <x-slot:trigger>
     <img
-      src="https://randomuser.me/api/portraits/lego/1.jpg"
+      src="{{ auth()->user()->avatar_url }}"
       class="w-8 h-8 rounded-full mr-2 cursor-pointer"
       />
   </x-slot:trigger>
