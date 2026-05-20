@@ -151,6 +151,8 @@ new class extends Component
         }
         $this->success('Usuario actualizado.');
       } else {
+
+        // Crear el usuario, con un password random
         $random = Str::random(12);
         $user = User::create([
           'name' => $validated['form']['name'],
@@ -163,14 +165,8 @@ new class extends Component
           $user->assignRole($validated['form']['role']);
         }
 
-        // Send invitation email with one-time link
-        try {
-          (new UserInvitationService())->sendInvitation($user);
-          $this->success('Usuario creado. Invitación enviada.');
-        } catch (\Exception $e) {
-          report($e);
-          $this->error('Usuario creado, pero fallo al enviar invitación.');
-        }
+        // Enviar la invitación por correo
+        $this->sendInvitation($user->id);
       }
 
       $this->modalOpen = false;
@@ -184,57 +180,142 @@ new class extends Component
     }
   }
 
-  public function confirmDelete($id)
-  {
+  public function sendInvitation($id) {
+    $user = User::findOrFail($id);
+    try {
+      (new UserInvitationService())->sendInvitation($user);
+      $this->success(
+        title: 'Invitación enviada',
+        description: 'La invitación fue enviada correctamente',
+        icon: 'tabler.mail',
+        timeout: 3000
+        );
+    } catch (\Exception $e) {
+      report($e);
+      $this->error(
+        title: 'Fallo al enviar invitación',
+        description: 'Ocurrió un error al enviar la invitación',
+        icon: 'tabler.alert-circle',
+        timeout: 3000
+      );
+    }
+  }
+
+  public function confirmDelete($id) {
     $this->confirmingDelete = true;
     $this->deleteId = $id;
   }
 
-  public function delete()
-  {
+  public function delete() {
     if ($this->deleteId) {
       $user = User::findOrFail($this->deleteId);
       $user->delete();
-      $this->success('Usuario eliminado.');
+      $this->success(
+        title: 'Usuario eliminado',
+        description: 'El usuario fue eliminado correctamente',
+        icon: 'tabler.trash',
+        timeout: 3000
+      );
       $this->resetPage();
     }
     $this->confirmingDelete = false;
     $this->deleteId = null;
   }
 
-  public function restore($id)
-  {
+  public function restore($id) {
     $user = User::withTrashed()->findOrFail($id);
     $user->restore();
-    $this->success('Usuario restaurado.');
+    $this->success(
+      title: 'Usuario restaurado',
+      description: 'El usuario fue restaurado correctamente',
+      icon: 'tabler.refresh',
+      timeout: 3000
+    );
+    $this->resetPage();
+  }
+
+  public function toggleSuspendido($id) {
+    $user = User::findOrFail($id);
+    $user->status = $user->status === UserStatus::SUSPENDIDO ? UserStatus::ACTIVO : UserStatus::SUSPENDIDO;
+    $user->save();
+    $this->success(
+      title: 'Usuario ' . ($user->status === UserStatus::SUSPENDIDO ? 'suspendido' : 'activado'),
+      description: 'El usuario fue ' . ($user->status === UserStatus::SUSPENDIDO ? 'suspendido' : 'activado') . ' correctamente',
+      icon: $user->status === UserStatus::SUSPENDIDO ? 'tabler.user-x' : 'tabler.user-check',
+      timeout: 3000
+    );
     $this->resetPage();
   }
 };
 ?>
 
 <div>
-  <x-header title="Usuarios" separator>
-    <x-slot:middle class="!justify-start">
-      <x-input placeholder="Buscar..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
-    </x-slot:middle>
-    <x-slot:actions>
-      <x-button label="Crear Usuario" icon="o-plus" class="btn-primary" wire:click="openCreate" />
-      <x-button :label="$showDeleted ? 'Ver activas' : 'Ver eliminadas'" :icon="$showDeleted ? 'o-eye' : 'o-eye-slash'" class="btn-ghost ml-2" wire:click="$toggle('showDeleted')" />
-    </x-slot:actions>
-  </x-header>
+  <x-input
+    placeholder="Buscar..."
+    wire:model.live.debounce="search"
+    clearable
+    icon="tabler.zoom"
+    class="outline-none!"
+    />
 
-  <x-card shadow>
-    <x-table :headers="$headers" :rows="$users" with-pagination :per-page="$perPage" :per-page-values="$perPageValues">
-      @scope('actions', $user)
-        @if(method_exists($user, 'trashed') && $user->trashed())
-          <x-button icon="o-arrow-u-turn-left" wire:click="restore({{ $user->id }})" spinner="1" class="btn-ghost btn-sm" />
+  <div class="flex gap-1 my-2">
+    <x-button
+      label="Crear Usuario"
+      icon="tabler.user-plus"
+      class="btn-primary"
+      wire:click="openCreate"
+      />
+    <x-button
+      :label="$showDeleted ? 'Ver activos' : 'Ver eliminados'"
+      :icon="$showDeleted ? 'tabler.eye' : 'tabler.eye-off'"
+      class="btn-ghost ml-2"
+      wire:click="$toggle('showDeleted')"
+      />
+  </div>
+
+  <x-table :headers="$headers" :rows="$users" with-pagination :per-page="$perPage" :per-page-values="$perPageValues">
+    @scope('cell_status', $user)
+      <div class="text-center">
+        <x-badge
+          class="badge-{{ $user->status->color() }} uppercase"
+          value="{{ $user->status->label() }}"
+          />
+      </div>
+    @endscope
+
+    @scope('actions', $user)
+      <div class="flex gap-1">
+        <x-button
+          icon="tabler.pencil"
+          wire:click="openEdit({{ $user->id }})"
+          class="btn-ghost btn-sm btn-info"
+          />
+        @if ($user->status == \App\Enum\UserStatus::INVITADO)
+          <x-button
+            icon="tabler.mail-fast"
+            wire:click='sendInvitation({{ $user->id }})'
+            class="btn-ghost btn-sm btn-success"
+            tooltip="Enviar invitación"
+            />
         @else
-          <x-button icon="o-pencil" wire:click="openEdit({{ $user->id }})" class="btn-ghost btn-sm" />
-          <x-button icon="o-trash" wire:click="confirmDelete({{ $user->id }})" spinner="1" class="btn-ghost btn-sm text-error" />
+          <x-button
+            icon="tabler.{{ $user->status == \App\Enum\UserStatus::ACTIVO ? 'user-off' : 'user-check' }}"
+            wire:click="toggleSuspendido({{ $user->id }})"
+            spinner="1"
+            class="btn-ghost btn-sm {{ $user->status == \App\Enum\UserStatus::ACTIVO ? 'btn-error' : 'btn-success' }}"
+            tooltip="{{ $user->status == \App\Enum\UserStatus::ACTIVO ? 'Suspender' : 'Activar' }}"
+            />
         @endif
-      @endscope
-    </x-table>
-  </x-card>
+        <x-button
+          icon="tabler.trash"
+          wire:click="confirmDelete({{ $user->id }})"
+          spinner="1"
+          class="btn-ghost btn-sm text-error"
+          tooltip="Eliminar"
+          />
+      </div>
+    @endscope
+  </x-table>
 
   <x-modal wire:model="modalOpen" title="{{ $form['id'] ? 'Editar Usuario' : 'Crear Usuario' }}" separator>
     <div class="space-y-3">
