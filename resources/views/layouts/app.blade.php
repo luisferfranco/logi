@@ -60,14 +60,14 @@
         @if (($user = auth()->user())&& ($user->hasRole('admin') || $user->hasRole('super-admin')))
           <x-menu-separator />
           <x-menu-item
-            title="Admininstrar Usuarios"
-            icon="tabler.users-group"
-            link="{{ route('admin.users.index') }}"
-            />
-          <x-menu-item
             title="Admininstrar Empresas"
             icon="tabler.building-factory-2"
             link="{{ route('admin.empresas.index') }}"
+            />
+          <x-menu-item
+            title="Admininstrar Usuarios"
+            icon="tabler.users-group"
+            link="{{ route('admin.users.index') }}"
             />
         @endif
       </x-menu>
