@@ -66,7 +66,7 @@
           <x-menu-item
             title="Usuarios"
             icon="o-users"
-            link="/users"
+            link="{{ route('admin.users.index') }}"
             />
         @endif
 

@@ -12,3 +12,7 @@ Route::get('/login-google', function () {
 });
 Route::livewire('/password', 'pages::auth.password')->name('password');
 Route::livewire('/google-callback', 'pages::auth.callback');
+
+Route::middleware(['auth'])->group(function () {
+  Route::livewire('/admin/users', 'pages::admin.users.index')->name('admin.users.index');
+});
