@@ -7,3 +7,72 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+
+
+/**
+    The lines above are intact.
+    The lines below were added by maryUI installer.
+*/
+
+/** daisyUI */
+@plugin "daisyui" {
+    themes: ferti --default, dark --prefersdark;
+}
+
+/* maryUI */
+@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
+
+
+@plugin "daisyui/theme" {
+  name: "ferti";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(96% 0.003 264.542);
+  --color-base-300: oklch(87% 0.01 258.338);
+  --color-base-content: oklch(0% 0 0);
+  --color-primary: #319B32;
+  --color-primary-content: oklch(100% 0 0);
+  --color-secondary: #7A8223;
+  --color-secondary-content: oklch(100% 0 0);
+  --color-accent: #B38E5D;
+  --color-accent-content: oklch(26% 0.051 172.552);
+  --color-neutral: #6F7271;
+  --color-neutral-content: oklch(98% 0 0);
+  --color-info: oklch(58% 0.158 241.966);
+  --color-info-content: oklch(28% 0.091 267.935);
+  --color-success: oklch(52% 0.154 150.069);
+  --color-success-content: oklch(96% 0.044 156.743);
+  --color-warning: oklch(82% 0.189 84.429);
+  --color-warning-content: oklch(0% 0 0);
+  --color-error: oklch(57% 0.245 27.325);
+  --color-error-content: oklch(100% 0 0);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.1875rem;
+  --size-field: 0.1875rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+
+
+/* Theme toggle */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/**
+* Paginator - Traditional style
+* Because Laravel defaults does not match well the design of daisyUI.
+*/
+
+.mary-table-pagination span[aria-current="page"] > span {
+    @apply bg-primary text-base-100
+}
+
+.mary-table-pagination button {
+    @apply cursor-pointer
+}
