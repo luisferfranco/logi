@@ -45,6 +45,7 @@ new class extends Component
       'empleado'              => $this->empleado,
       'rfc'                   => $this->rfc,
       'estado'                => EstadoUsuario::PENDIENTE,
+      'password'              => \Str::random(16),
       'codigo_invitacion'     => \Str::random(40),
       'expiracion_invitacion' => now()->addDays(2),
     ]);
