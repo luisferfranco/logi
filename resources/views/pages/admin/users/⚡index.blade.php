@@ -3,6 +3,7 @@
 use Livewire\Component;
 use App\Enum\EstadoUsuario;
 use Mary\Traits\Toast;
+use App\Models\User;
 
 new class extends Component
 {
@@ -38,16 +39,19 @@ new class extends Component
       'rfc' => 'required|regex:/^[A-ZÑ]{4}\d{6}[A-ZÑ0-9]{3}$/',
     ]);
 
-    $user = \App\Models\User::create([
-      'nombre' => $this->nombre,
-      'email' => $this->email,
-      'empleado' => $this->empleado,
-      'rfc' => $this->rfc,
-      'estado' => EstadoUsuario::PENDIENTE,
+    $user = User::create([
+      'nombre'                => $this->nombre,
+      'email'                 => $this->email,
+      'empleado'              => $this->empleado,
+      'rfc'                   => $this->rfc,
+      'estado'                => EstadoUsuario::PENDIENTE,
+      'codigo_invitacion'     => \Str::random(40),
+      'expiracion_invitacion' => now()->addDays(2),
     ]);
 
     // Enviar la notificación de creación de cuenta por
     // correo electrónico
+    $user->notify(new \App\Notifications\NotificacionInvitacion($user));
 
     // Resetear campos y cerrar modal
     $this->reset(['nombre', 'email', 'empleado', 'rfc']);
@@ -55,11 +59,28 @@ new class extends Component
 
     // Refrescar lista de usuarios
     $this->users = \App\Models\User::all();
+
+    $this->success(
+      title: 'Usuario creado',
+      description: 'El usuario ha sido creado exitosamente. Se ha enviado una invitación por correo electrónico.',
+      timeout: 5000,
+      icon: 'o-envelope',
+    );
   }
 
   public function crearUsuario() {
     $this->reset(['nombre', 'email', 'empleado', 'rfc']);
     $this->crearModal = true;
+  }
+
+  public function invitar(User $user) {
+    $user->notify(new \App\Notifications\NotificacionInvitacion($user));
+    $this->success(
+      title: 'Invitación enviada',
+      description: 'Se ha enviado una invitación por correo electrónico al usuario ' . $user->email . '.',
+      timeout: 5000,
+      icon: 'o-envelope',
+    );
   }
 };
 ?>
@@ -147,6 +168,7 @@ new class extends Component
           class="btn-square btn-info"
           icon="o-envelope"
           tooltip-left="Invitar"
+          spinner
           />
       @endif
 
@@ -156,6 +178,7 @@ new class extends Component
           class="btn-square {{ $u->estado==EstadoUsuario::ACTIVO ? 'btn-error' : 'btn-success' }}"
           icon="{{ $u->estado==EstadoUsuario::ACTIVO ? 'o-lock-closed' : 'o-lock-open' }}"
           tooltip-left="{{ $u->estado==EstadoUsuario::ACTIVO ? 'Bloquear' : 'Desbloquear' }}"
+          spinner
           />
       @endif
     @endscope

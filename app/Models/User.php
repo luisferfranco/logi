@@ -28,9 +28,13 @@ class User extends Authenticatable
   protected function casts(): array
   {
     return [
-      'email_verified_at' => 'datetime',
-      'password' => 'hashed',
-      'estado' => EstadoUsuario::class,
+      'email_verified_at'     => 'datetime',
+      'password'              => 'hashed',
+      'estado'                => EstadoUsuario::class,
+      'expiracion_invitacion' => 'datetime',
+      'accepted_at'           => 'datetime',
+      'created_at'            => 'datetime',
+      'updated_at'            => 'datetime',
     ];
   }
 }
