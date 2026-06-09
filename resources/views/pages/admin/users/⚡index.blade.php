@@ -32,48 +32,6 @@ new class extends Component
     $this->users = \App\Models\User::all();
   }
 
-  public function crear() {
-    $this->validate([
-      'nombre' => 'required',
-      'email' => 'required|email|unique:users,email',
-      'rfc' => 'required|regex:/^[A-ZÑ]{4}\d{6}[A-ZÑ0-9]{3}$/',
-    ]);
-
-    $user = User::create([
-      'nombre'                => $this->nombre,
-      'email'                 => $this->email,
-      'empleado'              => $this->empleado,
-      'rfc'                   => $this->rfc,
-      'estado'                => EstadoUsuario::PENDIENTE,
-      'password'              => \Str::random(16),
-      'codigo_invitacion'     => \Str::random(40),
-      'expiracion_invitacion' => now()->addDays(2),
-    ]);
-
-    // Enviar la notificación de creación de cuenta por
-    // correo electrónico
-    $user->notify(new \App\Notifications\NotificacionInvitacion($user));
-
-    // Resetear campos y cerrar modal
-    $this->reset(['nombre', 'email', 'empleado', 'rfc']);
-    $this->crearModal = false;
-
-    // Refrescar lista de usuarios
-    $this->users = \App\Models\User::all();
-
-    $this->success(
-      title: 'Usuario creado',
-      description: 'El usuario ha sido creado exitosamente. Se ha enviado una invitación por correo electrónico.',
-      timeout: 5000,
-      icon: 'o-envelope',
-    );
-  }
-
-  public function crearUsuario() {
-    $this->reset(['nombre', 'email', 'empleado', 'rfc']);
-    $this->crearModal = true;
-  }
-
   public function invitar(User $user) {
     $user->notify(new \App\Notifications\NotificacionInvitacion($user));
     $this->success(
@@ -83,60 +41,36 @@ new class extends Component
       icon: 'o-envelope',
     );
   }
+
+  public function toggleBloqueo(User $user) {
+    if ($user->estado == EstadoUsuario::ACTIVO) {
+      $user->estado = EstadoUsuario::BLOQUEADO;
+      $mensaje = 'Usuario bloqueado';
+      $icono = 'o-lock-closed';
+    } else {
+      $user->estado = EstadoUsuario::ACTIVO;
+      $mensaje = 'Usuario desbloqueado';
+      $icono = 'o-lock-open';
+    }
+    $user->save();
+
+    // Refrescar lista de usuarios
+    $this->users = User::all();
+
+    $this->success(
+      title: $mensaje,
+      description: 'El usuario ' . $user->email . ' ha sido actualizado.',
+      timeout: 5000,
+      icon: $icono,
+    );
+  }
 };
 ?>
 
 <x-card>
-  <x-modal wire:model="crearModal" class="backdrop-blur">
-    <h1 class="text-xl font-bold">Crear un nuevo usuario</h1>
-    <p class="text-base-content/50">Complete los campos para crear un nuevo usuario.</p>
-    <form wire:submit='crear' class="space-y-2 mt-4">
-      <x-input
-        label="Nombre completo"
-        wire:model="nombre"
-        class=""
-        required
-        />
-
-      <x-input
-        label="Correo electrónico"
-        type="email"
-        wire:model="email"
-        class=""
-        required
-        />
-
-      <x-input
-        label="Número de empleado"
-        wire:model="empleado"
-        class=""
-        hint="Si se trata de un usuario de Fertinal, por favor introduce su número de empleado."
-        />
-
-      <x-input
-        label="RFC"
-        wire:model="rfc"
-        class=""
-        required
-        />
-
-      <div class="flex justify-end gap-2 mt-4">
-        <x-button
-          label="Cancelar"
-          class="btn-ghost"
-          @click="$set('crearModal', false)"
-          />
-        <x-button
-          label="Crear usuario"
-          class="btn-primary"
-          type="submit"
-          />
-      </div>
-    </form>
-  </x-modal>
 
   <x-button
-    wire:click="crearUsuario"
+    link="{{ route('admin.users.create') }}"
     label="Nuevo usuario"
     class="btn-primary mb-6"
     icon="o-plus-circle"
@@ -175,7 +109,7 @@ new class extends Component
 
       @if (($u->id !== auth()->id()) && ($u->estado == EstadoUsuario::ACTIVO || $u->estado == EstadoUsuario::BLOQUEADO))
         <x-button
-          wire:click="bloqueo({{ $u }})"
+          wire:click="toggleBloqueo({{ $u }})"
           class="btn-square {{ $u->estado==EstadoUsuario::ACTIVO ? 'btn-error' : 'btn-success' }}"
           icon="{{ $u->estado==EstadoUsuario::ACTIVO ? 'o-lock-closed' : 'o-lock-open' }}"
           tooltip-left="{{ $u->estado==EstadoUsuario::ACTIVO ? 'Bloquear' : 'Desbloquear' }}"
