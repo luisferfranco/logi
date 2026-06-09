@@ -35,7 +35,10 @@
       <x-app-brand class="px-5 pt-4" />
 
       {{-- MENU --}}
-      <x-menu activate-by-route>
+      <x-menu
+        activate-by-route
+        active-bg-color="bg-primary/75 font-bold"
+        >
 
         {{-- User --}}
         @if($user = auth()->user())
@@ -60,7 +63,9 @@
         <x-menu-item
           title="Inicio"
           icon="o-home"
-          link="/dashboard" />
+          link="/dashboard"
+          class="hover:bg-primary/25"
+          />
 
         @if ($user->can('gestionar usuarios'))
           <x-menu-item
