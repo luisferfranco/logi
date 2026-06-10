@@ -1,0 +1,121 @@
+<?php
+
+use Livewire\Component;
+use App\Enum\EstadoUsuario;
+use Mary\Traits\Toast;
+use App\Models\User;
+
+new class extends Component
+{
+  use Toast;
+
+  public $user;
+  public $users;
+  public $headers;
+
+  // Modal para crear usuarios
+  public $crearModal = false;
+  public $nombre, $email, $empleado, $rfc;
+
+  public function mount() {
+    $user = auth()->user();
+    if (!$user->can('gestionar usuarios')) {
+      abort(403);
+    }
+
+    $this->headers = [
+      ['key' => 'id', 'label' => 'ID'],
+      ['key' => 'nombre', 'label' => 'Nombre'],
+      ['key' => 'estado', 'label' => 'Estado'],
+      ['key' => 'created_at', 'label' => 'Creación / Actualización'],
+    ];
+    $this->users = \App\Models\User::all();
+  }
+
+  public function invitar(User $user) {
+    $user->notify(new \App\Notifications\NotificacionInvitacion($user));
+    $this->success(
+      title: 'Invitación enviada',
+      description: 'Se ha enviado una invitación por correo electrónico al usuario ' . $user->email . '.',
+      timeout: 5000,
+      icon: 'o-envelope',
+    );
+  }
+
+  public function toggleBloqueo(User $user) {
+    if ($user->estado == EstadoUsuario::ACTIVO) {
+      $user->estado = EstadoUsuario::BLOQUEADO;
+      $mensaje = 'Usuario bloqueado';
+      $icono = 'o-lock-closed';
+    } else {
+      $user->estado = EstadoUsuario::ACTIVO;
+      $mensaje = 'Usuario desbloqueado';
+      $icono = 'o-lock-open';
+    }
+    $user->save();
+
+    // Refrescar lista de usuarios
+    $this->users = User::all();
+
+    $this->success(
+      title: $mensaje,
+      description: 'El usuario ' . $user->email . ' ha sido actualizado.',
+      timeout: 5000,
+      icon: $icono,
+    );
+  }
+};
+?>
+
+<x-card>
+
+  <x-button
+    link="{{ route('admin.users.create') }}"
+    label="Nuevo usuario"
+    class="btn-primary mb-6"
+    icon="o-plus-circle"
+    />
+
+  <x-table
+    :headers="$headers"
+    :rows="$users"
+    >
+    @scope('cell_nombre', $u)
+      <x-avatar
+        :image="$u->avatar"
+        :title="$u->nombre"
+        :subtitle="$u->email"
+        class="w-8 h-8"
+        />
+    @endscope
+
+    @scope('cell_estado', $u)
+      <x-badge
+        value="{{ $u->estado->label() }}"
+        class="badge-{{ $u->estado->color() }}"
+        />
+    @endscope
+
+    @scope('actions', $u)
+      @if ($u->estado == EstadoUsuario::INACTIVO || $u->estado == EstadoUsuario::PENDIENTE)
+        <x-button
+          wire:click="invitar({{ $u }})"
+          class="btn-square btn-info"
+          icon="o-envelope"
+          tooltip-left="Invitar"
+          spinner
+          />
+      @endif
+
+      @if (($u->id !== auth()->id()) && ($u->estado == EstadoUsuario::ACTIVO || $u->estado == EstadoUsuario::BLOQUEADO))
+        <x-button
+          wire:click="toggleBloqueo({{ $u }})"
+          class="btn-square {{ $u->estado==EstadoUsuario::ACTIVO ? 'btn-error' : 'btn-success' }}"
+          icon="{{ $u->estado==EstadoUsuario::ACTIVO ? 'o-lock-closed' : 'o-lock-open' }}"
+          tooltip-left="{{ $u->estado==EstadoUsuario::ACTIVO ? 'Bloquear' : 'Desbloquear' }}"
+          spinner
+          />
+      @endif
+    @endscope
+  </x-table>
+</x-card>
