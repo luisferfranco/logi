@@ -12,6 +12,8 @@ Route::get('/login-google', function () {
 Route::livewire('/password', 'pages::auth.password')->name('password');
 Route::livewire('/google-callback', 'pages::auth.callback');
 Route::livewire('/invitacion/{codigo}', 'pages::auth.invitacion')->name('invitacion');
+Route::livewire('/recover', 'pages::auth.recover')->name('password.request');
+Route::livewire('/reinicio/{token}', 'pages::auth.reinicio')->name('password.reset');
 
 Route::middleware(['auth'])->group(function () {
   Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');

@@ -33,8 +33,8 @@ class extends Component
 ?>
 
 <div>
-  <p class="font-bold text-2xl">Ingresar Contraseña</p>
-  <p class="text-sm text-base-content/50">Ingresa tu contraseña para iniciar sesión en tu cuenta.</p>
+  <p class="font-bold text-2xl">Reinicia tu Contraseña</p>
+  <p class="text-sm text-base-content/50">Ingresa tu nueva contraseña para tu cuenta.</p>
 
   <form wire:submit='login' class="space-y-4 mt-6">
     <div>
@@ -62,5 +62,7 @@ class extends Component
     <x-button label="Login" class="btn-primary w-full" type="submit" />
   </form>
 
-  <p class="mt-6">Si olvidaste tu password, por favor haz click <a wire:navigate class="hover:underline text-info" href="#">aquí</a>.</p>
+  <p class="mt-6">
+    Si olvidaste tu password, por favor haz click <a wire:navigate class="hover:underline text-info" href="{{ route('password.request') }}">aquí</a>.
+  </p>
 </div>

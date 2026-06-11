@@ -29,5 +29,6 @@
     </x-card>
 
     @livewireScripts
+    <x-toast />
   </body>
 </html>
