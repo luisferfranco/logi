@@ -117,11 +117,22 @@ new class extends Component
         <div class="font-semibold">Roles</div>
         <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           @foreach ($availableRoles as $role)
-            <x-checkbox
-              label="{{ $role->name }}"
-              wire:model="selectedRoles"
-              value="{{ $role->name }}"
-            />
+            <div>
+              <x-checkbox
+                label="{{ $role->name }}"
+                wire:model="selectedRoles"
+                value="{{ $role->name }}"
+                />
+              @foreach ($role->permissions as $permiso)
+                <div class="flex items-center ml-6 text-xs text-base-content/50">
+                  <x-icon
+                    name="o-check"
+                    class="text-success w-4 h-4"
+                    />
+                  {{ $permiso->name }}
+                </div>
+              @endforeach
+            </div>
           @endforeach
         </div>
       </div>
