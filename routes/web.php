@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::home')->name('home');
-Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
 Route::livewire('/ui', 'pages::ui');
 
 Route::livewire('/login', 'pages::auth.login')->name('login');
@@ -15,6 +14,8 @@ Route::livewire('/google-callback', 'pages::auth.callback');
 Route::livewire('/invitacion/{codigo}', 'pages::auth.invitacion')->name('invitacion');
 
 Route::middleware(['auth'])->group(function () {
-    Route::livewire('/admin/users', 'pages::admin.users.index')->name('admin.users.index');
-    Route::livewire('/admin/users/create', 'pages::admin.users.create')->name('admin.users.create');
+  Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
+
+  Route::livewire('/admin/users', 'pages::admin.users.index')->name('admin.users.index');
+  Route::livewire('/admin/users/create', 'pages::admin.users.create')->name('admin.users.create');
 });

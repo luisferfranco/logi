@@ -33,6 +33,10 @@ new class extends Component
   }
 
   public function invitar(User $user) {
+    $user->update([
+      'codigo_invitacion'     => \Str::random(40),
+      'expiracion_invitacion' => now()->addDays(2),
+    ]);
     $user->notify(new \App\Notifications\NotificacionInvitacion($user));
     $this->success(
       title: 'Invitación enviada',

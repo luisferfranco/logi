@@ -75,6 +75,38 @@
             />
         @endif
 
+        @if ($user->can('gestionar choferes'))
+          <x-menu-item
+            title="Choferes"
+            icon="o-users"
+            link="#"
+            />
+        @endif
+
+        @if ($user->can('gestionar unidades'))
+           <x-menu-item
+            title="Unidades"
+            icon="o-truck"
+            link="#"
+            />
+        @endif
+
+        @if ($user->can('gestionar localidades'))
+          <x-menu-item
+            title="Localidades"
+            icon="o-map-pin"
+            link="#"
+            />
+        @endif
+
+        @if ($user->can('aceptar propuestas'))
+          <x-menu-item
+            title="Propuestas"
+            icon="o-document-check"
+            link="#"
+            />
+        @endif
+
       </x-menu>
     </x-slot:sidebar>
 
