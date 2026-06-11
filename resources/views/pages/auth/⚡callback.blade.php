@@ -12,6 +12,10 @@ class extends Component
   public $mensaje;
 
   public function mount() {
+    if (auth()->check()) {
+      return redirect()->route('dashboard');
+    }
+
     $auth = Socialite::driver('google')->user();
 
     if (!str_ends_with($auth->email, '@fertinal.com')) {

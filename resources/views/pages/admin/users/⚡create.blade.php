@@ -14,6 +14,12 @@ new class extends Component
   public array $selectedRoles = [];
   public $showEmpleado = false;
 
+  public function mount() {
+    if (auth()->check()) {
+      return redirect()->route('dashboard');
+    }
+  }
+
   public function crear() {
     $this->validate([
       'nombre' => 'required',

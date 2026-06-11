@@ -9,6 +9,12 @@ class extends Component
 {
   public $email;
 
+  public function mount() {
+    if (auth()->check()) {
+      return redirect()->route('dashboard');
+    }
+  }
+
   public function login()
   {
     // Si es un usuario con cuenta de Fertinal, usar

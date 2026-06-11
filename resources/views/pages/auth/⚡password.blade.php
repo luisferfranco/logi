@@ -12,6 +12,10 @@ class extends Component
 
   public function mount()
   {
+    if (auth()->check()) {
+      return redirect()->route('dashboard');
+    }
+
     $this->email = request()->query('email', null);
     if (!$this->email) {
       $this->redirectRoute('login');

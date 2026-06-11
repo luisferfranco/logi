@@ -16,6 +16,9 @@ class extends Component
 
   public function mount($token)
   {
+  if (auth()->check()) {
+    return redirect()->route('dashboard');
+  }
   $this->token = $token;
   $this->user = User::where('token_recuperacion', $token)
     ->where('token_recuperacion_expira', '>', now())

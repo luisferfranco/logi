@@ -7,7 +7,10 @@ Route::livewire('/ui', 'pages::ui');
 
 Route::livewire('/login', 'pages::auth.login')->name('login');
 Route::get('/login-google', function () {
-    return Socialite::driver('google')->redirect();
+  if (auth()->check()) {
+    return redirect()->route('dashboard');
+  }
+  return Socialite::driver('google')->redirect();
 });
 Route::livewire('/password', 'pages::auth.password')->name('password');
 Route::livewire('/google-callback', 'pages::auth.callback');

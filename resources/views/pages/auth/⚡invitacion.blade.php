@@ -16,6 +16,10 @@ class extends Component
 
   public function mount($codigo)
   {
+    if (auth()->check()) {
+      return redirect()->route('dashboard');
+    }
+
     $user = User::where('codigo_invitacion', $codigo)->first();
     if (!$user) {
       $this->invalido = true;

@@ -13,6 +13,13 @@ class extends Component
   use Toast;
   public $email;
 
+  public function mount()
+  {
+    if (auth()->check()) {
+      return redirect()->route('dashboard');
+    }
+  }
+
   public function recover() {
     $this->validate([
       'email' => 'required|email',
