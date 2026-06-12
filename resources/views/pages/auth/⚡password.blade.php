@@ -2,6 +2,8 @@
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
+use App\Enum\EstadoUsuario;
+use App\Models\User;
 
 new
 #[Layout('layouts.auth')]
@@ -9,6 +11,7 @@ class extends Component
 {
   public $email, $password;
   public $remember = true;
+  public $bloqueado = false;
 
   public function mount()
   {
@@ -20,6 +23,12 @@ class extends Component
     if (!$this->email) {
       $this->redirectRoute('login');
     }
+
+    $user = User::where('email', $this->email)->first();
+    if ($user && $user->estado == EstadoUsuario::BLOQUEADO) {
+      $this->bloqueado = true;
+    }
+
   }
 
   public function login() {
@@ -39,6 +48,15 @@ class extends Component
 <div>
   <p class="font-bold text-2xl">Reinicia tu Contraseña</p>
   <p class="text-sm text-base-content/50">Ingresa tu nueva contraseña para tu cuenta.</p>
+
+  @if ($bloqueado)
+    <x-alert
+      title="Cuenta Bloqueada"
+      description="Tu cuenta ha sido bloqueada. Por favor, contacta al administrador para más información."
+      icon="o-lock-closed"
+      class="alert-error my-4"
+      />
+  @endif
 
   <form wire:submit='login' class="space-y-4 mt-6">
     <div>
