@@ -42,9 +42,15 @@ class DatabaseSeeder extends Seeder
       ]);
     }
 
+    $perm = [
+      'gestionar usuarios',
+      'gestionar clientes',
+    ];
     $r = Role::updateOrCreate(['name' => 'admin']);
-    $p = Permission::updateOrCreate(['name' => 'gestionar usuarios']);
-    $r->givePermissionTo($p);
+    foreach ($perm as $p) {
+      $per = Permission::updateOrCreate(['name' => $p]);
+      $r->givePermissionTo($per);
+    }
     $user->assignRole('admin');
 
     $perm = [

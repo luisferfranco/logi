@@ -75,6 +75,14 @@
             />
         @endif
 
+        @if ($user->can('gestionar clientes'))
+          <x-menu-item
+            title="Clientes"
+            icon="o-clipboard-document-list"
+            link="{{ route('admin.clientes.index') }}"
+            />
+        @endif
+
         @if ($user->can('gestionar choferes'))
           <x-menu-item
             title="Choferes"
