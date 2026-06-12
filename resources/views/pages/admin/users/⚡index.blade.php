@@ -4,6 +4,7 @@ use Livewire\Component;
 use App\Enum\EstadoUsuario;
 use Mary\Traits\Toast;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 new class extends Component
 {
@@ -51,6 +52,14 @@ new class extends Component
       $user->estado = EstadoUsuario::BLOQUEADO;
       $mensaje = 'Usuario bloqueado';
       $icono = 'o-lock-closed';
+
+      // Cerrar todas las sesiones activas del usuario
+      DB::table(config('session.table'))
+        ->where('user_id', $user->id)
+        ->delete();
+
+      // Invalidar el remember me para que no se vuelva a reconectar automáticamente
+      $user->remember_token = \Str::random(60);
     } else {
       $user->estado = EstadoUsuario::ACTIVO;
       $mensaje = 'Usuario desbloqueado';
@@ -114,7 +123,7 @@ new class extends Component
       @if (($u->id !== auth()->id()) && ($u->estado == EstadoUsuario::ACTIVO || $u->estado == EstadoUsuario::BLOQUEADO))
         <x-button
           wire:click="toggleBloqueo({{ $u }})"
-          class="btn-square {{ $u->estado==EstadoUsuario::ACTIVO ? 'btn-error' : 'btn-success' }}"
+          class="btn-square btn-neutral"
           icon="{{ $u->estado==EstadoUsuario::ACTIVO ? 'o-lock-closed' : 'o-lock-open' }}"
           tooltip-left="{{ $u->estado==EstadoUsuario::ACTIVO ? 'Bloquear' : 'Desbloquear' }}"
           spinner
