@@ -10,21 +10,14 @@ new class extends Component
 {
   use Toast;
 
-  public $nombre, $email, $empleado, $rfc;
+  public $nombre, $email, $empleado;
   public array $selectedRoles = [];
   public $showEmpleado = false;
-
-  public function mount() {
-    if (auth()->check()) {
-      return redirect()->route('dashboard');
-    }
-  }
 
   public function crear() {
     $this->validate([
       'nombre' => 'required',
       'email' => 'required|email|unique:users,email',
-      'rfc' => 'required|regex:/^[A-ZÑ]{4}\d{6}[A-ZÑ0-9]{3}$/',
       'selectedRoles' => 'array',
     ]);
 

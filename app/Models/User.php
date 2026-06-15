@@ -37,4 +37,8 @@ class User extends Authenticatable
       'updated_at'            => 'datetime',
     ];
   }
+
+  public function cliente() {
+    return $this->belongsTo(Cliente::class);
+  }
 }
