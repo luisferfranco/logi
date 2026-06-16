@@ -1,16 +1,28 @@
 <?php
 
 use Livewire\Component;
-use App\Models\AsidePermission;
+use Spatie\Permission\Models\Permission;
+use App\Models\AsideItem;
 
 new class extends Component
 {
-  public $aside;
+  public $asideItems;
 
   public function mount() {
-    $this->aside = AsidePermission::query()
-      ->whereIn('permission_id',
-        auth()->user()->getAllPermissions()->pluck('id'))
+
+    if (auth()->user()->hasRole('Super Admin')) {
+      $permissions = Permission::where('name', 'like', 'index %')
+        ->pluck('id')
+        ->toArray();
+    } else {
+      $permissions = auth()->user()
+        ->getAllPermissions()
+        ->where('name', 'like', 'index %')
+        ->pluck('id')
+        ->toArray();
+    }
+
+    $this->asideItems = AsideItem::whereIn('permission_id', $permissions)
       ->orderBy('orden')
       ->get();
   }
@@ -18,11 +30,11 @@ new class extends Component
 ?>
 
 <div>
-  @foreach ($aside as $item)
+  @foreach ($asideItems as $item)
     <x-menu-item
-      title="{{ $item->nombre }}"
-      icon="{{ $item->icono }}"
-      link="{{ $item->ruta == '#' ? '#' : route($item->ruta) }}"
-      />
+      :title="$item->nombre"
+      :icon="$item->icono"
+      :link="$item->ruta == '#' ? '#' : route($item->ruta)"
+    />
   @endforeach
 </div>
