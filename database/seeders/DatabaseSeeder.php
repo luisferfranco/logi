@@ -35,17 +35,18 @@ class DatabaseSeeder extends Seeder
 
     $permisos = [
       [
-        'familia' => 'usuarios',
-        'ruta'    => 'admin.users.index',
-        'icono'   => 'o-users',
+        'familia' => 'roles',
+        'ruta'    => 'admin.roles.index',
+        'icono'   => 'o-finger-print',
         'orden'   => 10,
       ],
       [
-        'familia' => 'roles',
-        'ruta'    => '#',
+        'familia' => 'usuarios',
+        'ruta'    => 'admin.users.index',
         'icono'   => 'o-users',
         'orden'   => 15,
       ],
+
       [
         'familia' => 'clientes',
         'ruta'    => 'admin.clientes.index',
@@ -84,9 +85,11 @@ class DatabaseSeeder extends Seeder
       $pid = Permission::where("name", "index $p[familia]")->first()->id;
       AsideItem::updateOrCreate([
         'nombre'        => strtoupper($p['familia']),
+      ], [
         'icono'         => $p['icono'],
         'ruta'          => $p['ruta'] ?? '#',
         'permission_id' => $pid,
+        'orden'         => $p['orden'],
       ]);
     }
 
