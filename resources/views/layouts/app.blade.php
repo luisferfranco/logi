@@ -67,53 +67,7 @@
           class="hover:bg-primary/25"
           />
 
-        @if ($user->can('gestionar usuarios'))
-          <x-menu-item
-            title="Usuarios"
-            icon="o-users"
-            link="{{ route('admin.users.index') }}"
-            />
-        @endif
-
-        @if ($user->can('gestionar clientes'))
-          <x-menu-item
-            title="Clientes"
-            icon="o-clipboard-document-list"
-            link="{{ route('admin.clientes.index') }}"
-            />
-        @endif
-
-        @if ($user->can('gestionar choferes'))
-          <x-menu-item
-            title="Choferes"
-            icon="o-users"
-            link="#"
-            />
-        @endif
-
-        @if ($user->can('gestionar unidades'))
-           <x-menu-item
-            title="Unidades"
-            icon="o-truck"
-            link="#"
-            />
-        @endif
-
-        @if ($user->can('gestionar localidades'))
-          <x-menu-item
-            title="Localidades"
-            icon="o-map-pin"
-            link="#"
-            />
-        @endif
-
-        @if ($user->can('aceptar propuestas'))
-          <x-menu-item
-            title="Propuestas"
-            icon="o-document-check"
-            link="#"
-            />
-        @endif
+        <livewire:aside-menu />
 
       </x-menu>
     </x-slot:sidebar>
