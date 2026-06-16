@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
       "nombre"    => "Luis Fernando Franco",
       "email"     => "lffrancoj@fertinal.com",
       "empleado"  => "10000341",
-      "rfc"       => "FAJL710523QP0",
       "estado"    => "activo",
       "password"  => bcrypt(Str::random(16)),
     ]);

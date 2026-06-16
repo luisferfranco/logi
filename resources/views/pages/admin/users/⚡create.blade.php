@@ -25,7 +25,6 @@ new class extends Component
       'nombre'                => $this->nombre,
       'email'                 => $this->email,
       'empleado'              => $this->empleado,
-      'rfc'                   => $this->rfc,
       'estado'                => EstadoUsuario::PENDIENTE,
       'password'              => \Str::random(16),
       'codigo_invitacion'     => \Str::random(40),
@@ -41,7 +40,7 @@ new class extends Component
     $user->notify(new \App\Notifications\NotificacionInvitacion($user));
 
     // Resetear campos y cerrar modal
-    $this->reset(['nombre', 'email', 'empleado', 'rfc']);
+    $this->reset(['nombre', 'email', 'empleado']);
     $this->crearModal = false;
 
     // Refrescar lista de usuarios
@@ -56,8 +55,7 @@ new class extends Component
   }
 
   public function updatedEmail($value) {
-    if (!$this->showEmpleado = str_ends_with($value, '@fertinal.com'))
-      $this->empleado = null;
+    $this->showEmpleado = str_ends_with($value, '@fertinal.com');
   }
 
   public function with(): array
@@ -93,15 +91,8 @@ new class extends Component
       required
       />
 
-    <x-input
-      label="RFC"
-      wire:model="rfc"
-      class=""
-      required
-      />
-
     @if ($showEmpleado)
-      <div class="md:col-span-2 py-2 px-4 bg-base-200 rounded-xl">
+      <div class="py-2 px-4 bg-base-200 rounded-xl">
         <p>Para los empleados de Fertinal, por favor introduce su número de empleado.</p>
         <x-input
           label="Número de empleado"
@@ -147,7 +138,7 @@ new class extends Component
         label="Crear usuario"
         class="btn-primary"
         type="submit"
-        spinner
+        spinner="save"
         />
     </div>
   </form>
