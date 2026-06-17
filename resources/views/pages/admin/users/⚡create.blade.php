@@ -5,6 +5,7 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use App\Enum\EstadoUsuario;
 use Mary\Traits\Toast;
+use App\Notifications\NotificacionInvitacion;
 
 new class extends Component
 {
@@ -13,44 +14,71 @@ new class extends Component
   public $nombre, $email, $empleado;
   public array $selectedRoles = [];
   public $showEmpleado = false;
+  public User $user;
+  public $creando = true;
+
+  public function mount(?User $user = null) {
+    if ($user && !auth()->user()->can('update usuarios')) {
+      abort(403);
+    } elseif (!$user && !auth()->user()->can('create usuarios')) {
+      abort(403);
+    }
+
+    if ($user) {
+      $this->nombre         = $user->nombre;
+      $this->email          = $user->email;
+      $this->empleado       = $user->empleado;
+      $this->selectedRoles  = $user->roles->pluck('name')->toArray();
+      $this->showEmpleado   = str_ends_with($user->email, '@fertinal.com');
+      $this->creando        = false;
+    }
+    $this->user = $user ?? new User();
+  }
 
   public function crear() {
     $this->validate([
-      'nombre' => 'required',
-      'email' => 'required|email|unique:users,email',
+      'nombre'        => 'required',
+      'email'         => 'required|email|unique:users,email,' . ($this->user->id ?? 'NULL') . ',id',
       'selectedRoles' => 'array',
     ]);
 
-    $user = User::create([
-      'nombre'                => $this->nombre,
-      'email'                 => $this->email,
-      'empleado'              => $this->empleado,
-      'estado'                => EstadoUsuario::PENDIENTE,
-      'password'              => \Str::random(16),
-      'codigo_invitacion'     => \Str::random(40),
-      'expiracion_invitacion' => now()->addDays(2),
-    ]);
+    $this->user->nombre                 = $this->nombre;
+    $this->user->email                  = $this->email;
+    $this->user->empleado               = $this->empleado;
+    $this->user->estado                 = EstadoUsuario::PENDIENTE;
+    $this->user->password               = \Str::random(16);
+    $this->user->codigo_invitacion      = \Str::random(40);
+    $this->user->expiracion_invitacion  = now()->addDays(2);
+    $this->user->save();
 
-    if (! empty($this->selectedRoles)) {
-      $user->assignRole($this->selectedRoles);
-    }
+    // Asignación de roles (si viene vacío el arreglo, se revocan todos)
+    $this->user->syncRoles($this->selectedRoles);
 
     // Enviar la notificación de creación de cuenta por
     // correo electrónico
-    $user->notify(new \App\Notifications\NotificacionInvitacion($user));
+    if ($this->creando) {
+      $this->user->notify(new NotificacionInvitacion($this->user));
+    }
 
     // Resetear campos y cerrar modal
     $this->reset(['nombre', 'email', 'empleado']);
     $this->crearModal = false;
 
     // Refrescar lista de usuarios
-    $this->users = \App\Models\User::all();
+    $this->users = User::all();
 
+    if ($this->creando) {
+      $mensaje = 'Usuario creado';
+      $icono = 'o-envelope';
+    } else {
+      $mensaje = 'Usuario actualizado';
+      $icono = 'o-check-circle';
+    }
     $this->success(
-      title: 'Usuario creado',
-      description: 'El usuario ha sido creado exitosamente. Se ha enviado una invitación por correo electrónico.',
+      title: $mensaje,
+      description: 'El usuario ha sido ' . ($this->creando ? 'creado' : 'actualizado') . ' exitosamente.' . ($this->creando ? ' Se ha enviado una invitación por correo electrónico.' : ''),
       timeout: 5000,
-      icon: 'o-envelope',
+      icon: $icono,
     );
   }
 
@@ -135,7 +163,7 @@ new class extends Component
         link="{{ route('admin.users.index') }}"
         />
       <x-button
-        label="Crear usuario"
+        label="{{ $this->creando ? 'Crear' : 'Modificar' }} usuario"
         class="btn-primary"
         type="submit"
         spinner="save"

@@ -35,7 +35,7 @@
             @foreach($permisos as $permiso)
               <td class="px-4 py-2 whitespace-nowrap text-center border-r">
                 <div class="flex items-center justify-center">
-                  <x-checkbox
+                  <x-toggle
                     wire:model="permisosSeleccionados"
                     value="{{ $permiso->name }}"
                     />

@@ -12,7 +12,7 @@ class extends Component
   public bool $invalido = false;
   public bool $expirado = false;
 
-  public $nombre, $email, $rfc, $password, $password_confirmation;
+  public $nombre, $email, $password, $password_confirmation;
 
   public function mount($codigo)
   {
@@ -28,7 +28,6 @@ class extends Component
     } else {
       $this->nombre = $user->nombre;
       $this->email = $user->email;
-      $this->rfc = $user->rfc;
     }
   }
 
@@ -41,12 +40,10 @@ class extends Component
 
     $this->validate([
       'nombre'    => 'required',
-      'rfc'       => 'required|regex:/^[A-ZÑ]{4}\d{6}[A-ZÑ0-9]{3}$/',
       'password'  => 'required|confirmed|min:8',
     ]);
 
     $user->update([
-      'rfc'                   => $this->rfc,
       'password'              => bcrypt($this->password),
       'estado'                => \App\Enum\EstadoUsuario::ACTIVO,
       'codigo_invitacion'     => null,
@@ -89,37 +86,44 @@ class extends Component
     <p class="text-center text-base-content/50 mb-2 text-sm">Una vez que completes el registro, podrás acceder a todas las funcionalidades de nuestra plataforma.</p>
 
     <form wire:submit='aceptar' class="space-y-4">
-      <x-input
-        label="Nombre completo"
-        wire:model="nombre"
-        required
-        />
+      <div>
+        <x-label value="Nombre Completo" required />
+        <x-input
+          wire:model="nombre"
+          class="outline-none!"
+          required
+          />
+      </div>
 
-      <x-input
-        label="Correo electrónico"
-        wire:model="email"
-        disabled
-        />
+      <div>
+        <x-label value="Correo electrónico" />
+        <x-input
+          type="email"
+          wire:model="email"
+          class="outline-none!"
+          disabled
+          />
+      </div>
 
-      <x-input
-        label="RFC"
-        wire:model="rfc"
-        required
-        />
+      <div>
+        <x-label value="Contraseña" required />
+        <x-input
+          type="password"
+          wire:model="password"
+          class="outline-none!"
+          required
+          />
+      </div>
 
-      <x-input
-        label="Contraseña"
-        type="password"
-        wire:model="password"
-        required
-        />
-
-      <x-input
-        label="Confirmar contraseña"
-        type="password"
-        wire:model="password_confirmation"
-        required
-        />
+      <div>
+        <x-label value="Confirmar contraseña" required />
+        <x-input
+          type="password"
+          wire:model="password_confirmation"
+          class="outline-none!"
+          required
+          />
+      </div>
 
       <x-button type="submit" class="btn-primary w-full">Crear cuenta</x-button>
     </form>

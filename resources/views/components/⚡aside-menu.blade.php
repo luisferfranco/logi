@@ -17,7 +17,7 @@ new class extends Component
     } else {
       $permissions = auth()->user()
         ->getAllPermissions()
-        ->where('name', 'like', 'index %')
+        ->filter(fn($perm) => str_starts_with($perm->name, 'index '))
         ->pluck('id')
         ->toArray();
     }

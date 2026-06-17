@@ -110,25 +110,36 @@ new class extends Component
     @endscope
 
     @scope('actions', $u)
-      @if ($u->estado == EstadoUsuario::INACTIVO || $u->estado == EstadoUsuario::PENDIENTE)
-        <x-button
-          wire:click="invitar({{ $u }})"
-          class="btn-square btn-info"
-          icon="o-envelope"
-          tooltip-left="Invitar"
-          spinner
-          />
-      @endif
+      @can('update usuarios')
+        <div class="flex items-center gap-1">
+          <x-button
+            link="{{ route('admin.users.edit', $u) }}"
+            class="btn-square btn-neutral"
+            icon="o-pencil-square"
+            tooltip-left="Editar"
+            />
 
-      @if (($u->id !== auth()->id()) && ($u->estado == EstadoUsuario::ACTIVO || $u->estado == EstadoUsuario::BLOQUEADO))
-        <x-button
-          wire:click="toggleBloqueo({{ $u }})"
-          class="btn-square btn-neutral"
-          icon="{{ $u->estado==EstadoUsuario::ACTIVO ? 'o-lock-closed' : 'o-lock-open' }}"
-          tooltip-left="{{ $u->estado==EstadoUsuario::ACTIVO ? 'Bloquear' : 'Desbloquear' }}"
-          spinner
-          />
-      @endif
+          @if ($u->estado == EstadoUsuario::INACTIVO || $u->estado == EstadoUsuario::PENDIENTE)
+            <x-button
+              wire:click="invitar({{ $u }})"
+              class="btn-square btn-info"
+              icon="o-envelope"
+              tooltip-left="Invitar"
+              spinner
+              />
+          @endif
+
+          @if (($u->id !== auth()->id()) && ($u->estado == EstadoUsuario::ACTIVO || $u->estado == EstadoUsuario::BLOQUEADO))
+            <x-button
+              wire:click="toggleBloqueo({{ $u }})"
+              class="btn-square btn-neutral"
+              icon="{{ $u->estado==EstadoUsuario::ACTIVO ? 'o-lock-closed' : 'o-lock-open' }}"
+              tooltip-left="{{ $u->estado==EstadoUsuario::ACTIVO ? 'Bloquear' : 'Desbloquear' }}"
+              spinner="toggleBloqueo({{ $u }})"
+              />
+          @endif
+        </div>
+      @endcan
     @endscope
   </x-table>
 </x-card>

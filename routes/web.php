@@ -21,8 +21,10 @@ Route::livewire('/reinicio/{token}', 'pages::auth.reinicio')->name('password.res
 Route::middleware(['auth'])->group(function () {
   Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
 
+  // Administración de usuarios ----------------------------------------
   Route::livewire('/admin/users', 'pages::admin.users.index')->name('admin.users.index');
   Route::livewire('/admin/users/create', 'pages::admin.users.create')->name('admin.users.create');
+  Route::livewire('/admin/users/edit/{user?}', 'pages::admin.users.create')->name('admin.users.edit');
 
   // Rutas de administración -------------------------------------------
   Route::livewire('/admin/clientes', 'pages::admin.clientes.index')->name('admin.clientes.index');
