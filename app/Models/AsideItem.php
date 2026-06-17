@@ -9,6 +9,6 @@ use Illuminate\Database\Eloquent\Attributes\Guarded;
 class AsideItem extends Model
 {
   public function permiso() {
-    return $this->hasOne(Permiso::class);
+    return $this->hasOne(Permiso::class, 'name', 'permission_name');
   }
 }
