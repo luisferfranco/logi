@@ -15,6 +15,10 @@ new class extends Component
   public $users, $user_id;
 
   public function mount() {
+    if (!auth()->user()->can('create clientes')) {
+      abort(403);
+    }
+
     $this->users = User::where('email', 'not like', '%@fertinal.com')
       ->orderBy('nombre')
       ->get();

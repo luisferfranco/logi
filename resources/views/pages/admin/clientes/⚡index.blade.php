@@ -8,6 +8,10 @@ new class extends Component
   public $headers;
 
   public function mount() {
+    if (!auth()->user()->can('index clientes')) {
+      abort(403);
+    }
+
     $this->clientes = \App\Models\Cliente::all();
 
     $this->headers = [
@@ -22,12 +26,14 @@ new class extends Component
 
 <x-card title="Gestión de Clientes" class="bg-base-100">
 
-  <x-button
-    icon="o-plus-circle"
-    class="btn-sm btn-primary"
-    link="{{ route('admin.clientes.create') }}"
-    label="Nuevo Cliente"
-    />
+  @can('create clientes')
+    <x-button
+      icon="o-plus-circle"
+      class="btn-sm btn-primary"
+      link="{{ route('admin.clientes.create') }}"
+      label="Nuevo Cliente"
+      />
+  @endcan
 
   @if ($errors->any())
     <div class="alert alert-danger bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">

@@ -23,12 +23,14 @@ new class extends Component
 
 <x-card class="bg-base-100" title="Roles">
 
-  <x-button
-    link="{{ route('admin.roles.create') }}"
-    class="btn-primary mb-4"
-    label="NUEVO"
-    icon="o-plus-circle"
-    />
+  @can('create roles')
+    <x-button
+      link="{{ route('admin.roles.create') }}"
+      class="btn-primary mb-4"
+      label="NUEVO"
+      icon="o-plus-circle"
+      />
+  @endcan
 
   @if ($roles->isEmpty())
     <p class="text-center text-base-content/50">No hay roles disponibles.</p>
@@ -53,11 +55,13 @@ new class extends Component
         </div>
 
         <div class="flex flex-col justify-center items-end">
-          <x-button
-            link="{{ route('admin.roles.edit', $role) }}"
-            class="btn-primary btn-square"
-            icon="o-pencil-square"
-            />
+          @can('edit roles')
+            <x-button
+              link="{{ route('admin.roles.edit', $role) }}"
+              class="btn-primary btn-square"
+              icon="o-pencil-square"
+              />
+          @endcan
         </div>
       @endforeach
     </div>

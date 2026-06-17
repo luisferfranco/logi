@@ -16,6 +16,10 @@ new class extends Component
 
   public function mount(Role $role): void
   {
+    if (!auth()->user()->can('edit roles')) {
+      abort(403);
+    }
+
     $this->role = $role;
     $this->nombreRol = $role->name;
 

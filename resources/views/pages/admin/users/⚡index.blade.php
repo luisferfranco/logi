@@ -20,7 +20,7 @@ new class extends Component
 
   public function mount() {
     $user = auth()->user();
-    if (!$user->can('gestionar usuarios')) {
+    if (!$user->can('index usuarios')) {
       abort(403);
     }
 
@@ -80,14 +80,16 @@ new class extends Component
 };
 ?>
 
-<x-card>
+<x-card class="bg-base-100" title="Usuarios" shadow separator>
 
-  <x-button
-    link="{{ route('admin.users.create') }}"
-    label="Nuevo usuario"
-    class="btn-primary mb-6"
-    icon="o-plus-circle"
-    />
+  @can('create usuarios')
+    <x-button
+      link="{{ route('admin.users.create') }}"
+      label="Nuevo usuario"
+      class="btn-primary mb-6"
+      icon="o-plus-circle"
+      />
+  @endcan
 
   <x-table
     :headers="$headers"

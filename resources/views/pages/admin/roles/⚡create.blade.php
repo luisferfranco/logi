@@ -16,6 +16,9 @@ new class extends Component
 
   public function mount(): void
   {
+    if (!auth()->user()->can('create roles')) {
+      abort(403);
+    }
   }
 
   public function getPermisosPorFamiliaProperty()
