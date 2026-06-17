@@ -18,7 +18,7 @@ return new class extends Migration
       $table->string('nombre');
       $table->string('descripcion')->nullable();
       $table->string('icono')->default("cube");
-      $table->string('ruta')->default("#");
+      $table->string('ruta')->nullable();
       $table->integer('orden')->default(0);
       $table->timestamps();
     });

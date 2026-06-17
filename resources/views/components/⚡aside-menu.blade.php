@@ -12,17 +12,18 @@ new class extends Component
 
     if (auth()->user()->hasRole('Super Admin')) {
       $permissions = Permission::where('name', 'like', 'index %')
-        ->pluck('id')
+        ->pluck('name')
         ->toArray();
     } else {
       $permissions = auth()->user()
         ->getAllPermissions()
         ->filter(fn($perm) => str_starts_with($perm->name, 'index '))
-        ->pluck('id')
+        ->pluck('name')
         ->toArray();
     }
 
-    $this->asideItems = AsideItem::whereIn('permission_id', $permissions)
+    $this->asideItems = AsideItem::whereIn('permission_name', $permissions)
+      ->where('parent_id', null)
       ->orderBy('orden')
       ->get();
   }
@@ -31,10 +32,6 @@ new class extends Component
 
 <div>
   @foreach ($asideItems as $item)
-    <x-menu-item
-      :title="$item->nombre"
-      :icon="$item->icono"
-      :link="$item->ruta == '#' ? '#' : route($item->ruta)"
-    />
+    <livewire:aside-item :item="$item" wire:key="menu-{{ $item->id }}" />
   @endforeach
 </div>

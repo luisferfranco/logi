@@ -38,4 +38,10 @@ new class extends Component
       label="Logout"
       />
   </div>
+
+  <div class="py-4 px-6 mt-6 rounded-xl bg-base-100">
+    <x-menu>
+      <livewire:aside-menu />
+    </x-menu>
+  </div>
 </x-card>

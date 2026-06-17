@@ -28,48 +28,48 @@
     <x-slot:sidebar
       drawer="main-drawer"
       collapsible
-      class="bg-base-100 shadow-xl"
+      class="bg-base-100 shadow-xl w-32"
       >
 
       {{-- BRAND --}}
       <x-app-brand class="px-5 pt-4" />
 
       {{-- MENU --}}
-      <x-menu
-        activate-by-route
-        active-bg-color="bg-primary/75 font-bold"
-        >
+        <x-menu
+          activate-by-route
+          active-bg-color="bg-primary/75 font-bold"
+          >
 
-        {{-- User --}}
-        @if($user = auth()->user())
-          <x-menu-separator />
+          {{-- User --}}
+          @if($user = auth()->user())
+            <x-menu-separator />
 
-          <x-list-item
-            :item="$user"
-            value="nombre"
-            sub-value="email"
-            no-separator
-            no-hover
-            class="-mx-2 -my-2 rounded"
-            >
-            <x-slot:actions>
-              <x-button icon="o-power" class="btn-circle btn-ghost btn-xs" tooltip-left="logoff" no-wire-navigate link="/logout" />
-            </x-slot:actions>
-          </x-list-item>
+            <x-list-item
+              :item="$user"
+              value="nombre"
+              sub-value="email"
+              no-separator
+              no-hover
+              class="-mx-2 -my-2 rounded w-64"
+              >
+              <x-slot:actions>
+                <x-button icon="o-power" class="btn-circle btn-ghost btn-xs" tooltip-left="logoff" no-wire-navigate link="/logout" />
+              </x-slot:actions>
+            </x-list-item>
 
-          <x-menu-separator />
-        @endif
+            <x-menu-separator />
+          @endif
 
-        <x-menu-item
-          title="Inicio"
-          icon="o-home"
-          link="/dashboard"
-          class="hover:bg-primary/25"
-          />
+          <x-menu-item
+            title="Inicio"
+            icon="o-home"
+            link="/dashboard"
+            class="hover:bg-primary/25"
+            />
 
-        <livewire:aside-menu />
+          <livewire:aside-menu />
 
-      </x-menu>
+        </x-menu>
     </x-slot:sidebar>
 
     {{-- The `$slot` goes here --}}
