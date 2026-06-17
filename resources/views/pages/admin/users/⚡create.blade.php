@@ -58,10 +58,9 @@ new class extends Component
     // correo electrónico
     if ($this->creando) {
       $this->user->notify(new NotificacionInvitacion($this->user));
+      $this->reset(['nombre', 'email', 'empleado']);
     }
 
-    // Resetear campos y cerrar modal
-    $this->reset(['nombre', 'email', 'empleado']);
     $this->crearModal = false;
 
     // Refrescar lista de usuarios
@@ -88,8 +87,16 @@ new class extends Component
 
   public function with(): array
   {
+    if (auth()->user()->hasRole('Super Admin')) {
+      $roles = Role::with('permissions')->get();
+    } else {
+      $roles = Role::where('name', '!=', 'Super Admin')
+        ->with('permissions')
+        ->get();
+    }
+
     return [
-      'availableRoles' => Role::all(),
+      'availableRoles' => $roles,
     ];
   }
 
@@ -104,20 +111,31 @@ new class extends Component
     class="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4"
     >
     <div class="md:col-span-2">
+      <x-label value="Nombre completo" required />
       <x-input
-        label="Nombre completo"
         wire:model="nombre"
         required
         />
     </div>
 
-    <x-input
-      label="Correo electrónico"
-      type="email"
-      wire:model.live="email"
-      class=""
-      required
-      />
+    <div>
+      <x-label value="Correo electrónico" required />
+      @if ($this->creando)
+        <x-input
+          type="email"
+          wire:model.live="email"
+          class="outline-none"
+          required
+          />
+      @else
+        <x-input
+          type="email"
+          wire:model.live="email"
+          class="outline-none"
+          disabled
+          />
+      @endif
+    </div>
 
     @if ($showEmpleado)
       <div class="py-2 px-4 bg-base-200 rounded-xl">
