@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
         'nombre'        => strtoupper($p['familia']),
       ], [
         'icono'         => $p['icono'],
-        'ruta'          => $p['ruta'] ?? '#',
+        'ruta'          => $p['ruta'] ?? 'construccion',
         'permission_id' => $pid,
         'orden'         => $p['orden'],
       ]);

@@ -19,7 +19,9 @@ Route::livewire('/recover', 'pages::auth.recover')->name('password.request');
 Route::livewire('/reinicio/{token}', 'pages::auth.reinicio')->name('password.reset');
 
 Route::middleware(['auth'])->group(function () {
+  // Generales ---------------------------------------------------------
   Route::livewire('/dashboard', 'pages::dashboard')->name('dashboard');
+  Route::livewire('/construccion', 'pages::construccion')->name('construccion');
 
   // Administración de usuarios ----------------------------------------
   Route::livewire('/admin/users', 'pages::admin.users.index')->name('admin.users.index');
