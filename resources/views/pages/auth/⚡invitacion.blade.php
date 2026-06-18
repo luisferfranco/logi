@@ -4,6 +4,7 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Password;
 
 new
 #[Layout('layouts.auth')]
@@ -40,7 +41,16 @@ class extends Component
 
     $this->validate([
       'nombre'    => 'required',
-      'password'  => 'required|confirmed|min:8',
+      'password' => [
+        'required',
+        'string',
+        'max:16',
+        // Escribimos la ruta completa de la regla de validación
+        Password::min(8)
+          ->mixedCase()
+          ->numbers()
+          ->symbols(),
+      ],
     ]);
 
     $user->update([

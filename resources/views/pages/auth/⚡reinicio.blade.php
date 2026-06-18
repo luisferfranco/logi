@@ -5,6 +5,7 @@ use Mary\Traits\Toast;
 use App\Models\User;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Password;
 
 new
 #[Layout('layouts.auth')]
@@ -27,7 +28,16 @@ class extends Component
 
   public function resetPassword() {
     $this->validate([
-      'password' => 'required|string|confirmed|min:8',
+      'password' => [
+        'required',
+        'string',
+        'max:16',
+        // Escribimos la ruta completa de la regla de validación
+        Password::min(8)
+          ->mixedCase()
+          ->numbers()
+          ->symbols(),
+      ],
     ]);
 
     if (!$this->user) {
