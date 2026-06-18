@@ -17,6 +17,7 @@
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.3",
         "robsontenorio/mary": "^2.8",
+        "secondnetwork/blade-tabler-icons": "^3.44",
         "spatie/laravel-permission": "^8.0"
     },
     "require-dev": {
