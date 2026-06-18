@@ -62,7 +62,7 @@
 
           <x-menu-item
             title="Inicio"
-            icon="phosphor.house-line-duotone"
+            icon="tabler.home-filled"
             link="/dashboard"
             class="hover:bg-primary/25"
             />
