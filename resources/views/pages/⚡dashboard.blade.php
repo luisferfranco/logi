@@ -40,8 +40,9 @@ new class extends Component
   </div>
 
   <div class="py-4 px-6 mt-6 rounded-xl bg-base-100">
-    <x-menu>
-      <livewire:aside-menu />
-    </x-menu>
+    <x-icon
+      name="phosphor.building-apartment-duotone"
+      class="w-12 h-12"
+      />
   </div>
 </x-card>

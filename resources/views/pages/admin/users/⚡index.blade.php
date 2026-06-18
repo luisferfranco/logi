@@ -87,7 +87,7 @@ new class extends Component
       link="{{ route('admin.users.create') }}"
       label="Nuevo usuario"
       class="btn-primary mb-6"
-      icon="o-plus-circle"
+      icon="phosphor.plus-circle-duotone"
       />
   @endcan
 
@@ -117,7 +117,7 @@ new class extends Component
           <x-button
             link="{{ route('admin.users.edit', $u) }}"
             class="btn-square btn-neutral"
-            icon="o-pencil-square"
+            icon="phosphor.pen-duotone"
             tooltip-left="Editar"
             />
 
@@ -125,7 +125,7 @@ new class extends Component
             <x-button
               wire:click="invitar({{ $u }})"
               class="btn-square btn-info"
-              icon="o-envelope"
+              icon="phosphor.envelope-duotone"
               tooltip-left="Invitar"
               spinner
               />
@@ -135,7 +135,7 @@ new class extends Component
             <x-button
               wire:click="toggleBloqueo({{ $u }})"
               class="btn-square btn-neutral"
-              icon="{{ $u->estado==EstadoUsuario::ACTIVO ? 'o-lock-closed' : 'o-lock-open' }}"
+              icon="{{ $u->estado==EstadoUsuario::ACTIVO ? 'phosphor.lock-duotone' : 'phosphor.lock-open-duotone' }}"
               tooltip-left="{{ $u->estado==EstadoUsuario::ACTIVO ? 'Bloquear' : 'Desbloquear' }}"
               spinner="toggleBloqueo({{ $u }})"
               />
