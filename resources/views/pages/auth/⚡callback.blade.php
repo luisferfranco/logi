@@ -12,6 +12,7 @@ class extends Component
   public $mensaje;
 
   public function mount() {
+    // Verificar si el usuario no está firmado
     if (auth()->check()) {
       return redirect()->route('dashboard');
     }
